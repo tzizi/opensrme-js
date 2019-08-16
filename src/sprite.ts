@@ -18,9 +18,10 @@ function read_drawcommand(info: number[], offset: number): [bin_types.DrawComman
             break;
 
         // HFlip
-        //case 1:
+        case 1:
         // VFlip
-        //case 2:
+        case 2:
+            break;
 
         // SetOffset
         case 3:
