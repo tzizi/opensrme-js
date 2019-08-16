@@ -337,6 +337,40 @@ function read_items(buffer: Buffer, offset: number): [bin_types.Item[], number] 
 }
 
 
+function read_quest(buffer: Buffer, offset: number): [bin_types.Quest, number] {
+    const giver = buffer.readInt32BE(offset);
+    offset += 4;
+
+    const mission_start = buffer.readInt8(offset) === 1;
+    offset += 1;
+
+    const giver_sprite = buffer.readInt16BE(offset);
+    offset += 2;
+
+    const name = buffer.readInt32BE(offset);
+    offset += 4;
+
+    const description = buffer.readInt32BE(offset);
+    offset += 4;
+
+    const level = buffer.readInt32BE(offset);
+    offset += 4;
+
+    return [{
+        giver,
+        mission_start,
+        giver_sprite,
+        name,
+        description,
+        level
+    }, offset]
+}
+
+function read_quests(buffer: Buffer, offset: number): [bin_types.Quest[], number] {
+    return read_array<bin_types.Quest>(read_quest, buffer, offset);
+}
+
+
 export function read_bin_all(buffer: Buffer): bin_types.All {
     let offset = 0;
 
@@ -348,7 +382,8 @@ export function read_bin_all(buffer: Buffer): bin_types.All {
         sprites: [],
         clips: [],
         sounds: [],
-        items: []
+        items: [],
+        quests: []
     };
 
     [all.palettes, offset]  = read_palettes(buffer, offset);
@@ -359,6 +394,7 @@ export function read_bin_all(buffer: Buffer): bin_types.All {
     [all.clips, offset]     = read_clips(buffer, offset);
     [all.sounds, offset]    = read_sounds(buffer, offset);
     [all.items, offset]     = read_items(buffer, offset);
+    [all.quests, offset]    = read_quests(buffer, offset);
 
     return all;
 }

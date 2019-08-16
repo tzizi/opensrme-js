@@ -5,6 +5,7 @@ export type FontId = Id;
 export type LanguageId = Id;
 export type StringId = Id;
 export type ImageId = Id;
+export type LevelId = Id;
 
 export interface Color {
     r: number;
@@ -132,6 +133,15 @@ export interface Item {
     sprite: SpriteId
 }
 
+export interface Quest {
+    giver: StringId,
+    mission_start: boolean,
+    giver_sprite: SpriteId,
+    name: StringId,
+    description: StringId,
+    level: LevelId
+}
+
 export interface All {
     palettes: Palette[],
     fonts: Font[],
@@ -140,5 +150,6 @@ export interface All {
     sprites: Sprite[],
     clips: Clip[],
     sounds: Sound[],
-    items: Item[]
+    items: Item[],
+    quests: Quest[]
 }
