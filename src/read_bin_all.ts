@@ -228,6 +228,46 @@ function read_sprites(buffer: Buffer, offset: number): [bin_types.Sprite[], stri
 }
 
 
+function read_clip(buffer: Buffer, offset: number): [bin_types.Clip, number] {
+    let clip = [];
+
+    const orientation_amt = buffer.readInt16BE(offset);
+    offset += 2;
+
+    for (let orientation_i = 0; orientation_i < orientation_amt; orientation_i++) {
+        let frames = [];
+
+        const frames_amt = buffer.readInt16BE(offset);
+        offset += 2;
+
+        for (let frame_i = 0; frame_i < frames_amt; frame_i++) {
+            frames.push(buffer.readInt16BE(offset));
+            offset += 2;
+        }
+
+        clip.push(frames);
+    }
+
+    return [clip, offset];
+}
+
+function read_clips(buffer: Buffer, offset: number): [bin_types.Clip[], number] {
+    let clips = [];
+
+    const clips_amt = buffer.readInt16BE(offset);
+    offset += 2;
+
+    for (let clip_i = 0; clip_i < clips_amt; clip_i++) {
+        let clip: bin_types.Clip;
+        [clip, offset] = read_clip(buffer, offset);
+
+        clips.push(clip);
+    }
+
+    return [clips, offset];
+}
+
+
 export function read_bin_all(buffer: Buffer): bin_types.All {
     let offset = 0;
 
@@ -236,7 +276,8 @@ export function read_bin_all(buffer: Buffer): bin_types.All {
         fonts: [],
         languages: [],
         images: [],
-        sprites: []
+        sprites: [],
+        clips: []
     };
 
     [all.palettes, offset]  = read_palettes(buffer, offset);
@@ -244,6 +285,7 @@ export function read_bin_all(buffer: Buffer): bin_types.All {
     [all.languages, offset] = read_languages(buffer, offset);
     [all.sprites,
         all.images, offset] = read_sprites(buffer, offset);
+    [all.clips, offset]     = read_clips(buffer, offset);
 
     return all;
 }

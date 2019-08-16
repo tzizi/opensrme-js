@@ -106,10 +106,13 @@ export interface Sprite {
     commands: DrawCommand[]
 }
 
+export type Clip = number[][];
+
 export interface All {
     palettes: Palette[],
     fonts: Font[],
     languages: Language[],
     images: string[],
-    sprites: Sprite[]
+    sprites: Sprite[],
+    clips: Clip[]
 }
