@@ -370,6 +370,35 @@ function read_quests(buffer: Buffer, offset: number): [bin_types.Quest[], number
     return read_array<bin_types.Quest>(read_quest, buffer, offset);
 }
 
+function read_gang(buffer: Buffer, offset: number): [bin_types.Gang, number] {
+    const name = buffer.readInt32BE(offset);
+    offset += 4;
+
+    const sprite = buffer.readInt16BE(offset);
+    offset += 2;
+
+    const notoriety_bar_sprite = buffer.readInt16BE(offset);
+    offset += 2;
+
+    const default_notoriety = buffer.readInt8(offset);
+    offset += 1;
+
+    const unk1 = buffer.readInt32BE(offset);
+    offset += 4;
+
+    return [{
+        name,
+        sprite,
+        notoriety_bar_sprite,
+        default_notoriety,
+        unk1
+    }, offset];
+}
+
+function read_gangs(buffer: Buffer, offset: number): [bin_types.Gang[], number] {
+    return read_array<bin_types.Gang>(read_gang, buffer, offset);
+}
+
 
 export function read_bin_all(buffer: Buffer): bin_types.All {
     let offset = 0;
@@ -383,7 +412,8 @@ export function read_bin_all(buffer: Buffer): bin_types.All {
         clips: [],
         sounds: [],
         items: [],
-        quests: []
+        quests: [],
+        gangs: []
     };
 
     [all.palettes, offset]  = read_palettes(buffer, offset);
@@ -395,6 +425,7 @@ export function read_bin_all(buffer: Buffer): bin_types.All {
     [all.sounds, offset]    = read_sounds(buffer, offset);
     [all.items, offset]     = read_items(buffer, offset);
     [all.quests, offset]    = read_quests(buffer, offset);
+    [all.gangs, offset]     = read_gangs(buffer, offset);
 
     return all;
 }

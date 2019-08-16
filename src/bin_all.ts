@@ -142,6 +142,14 @@ export interface Quest {
     level: LevelId
 }
 
+export interface Gang {
+    name: StringId,
+    sprite: SpriteId,
+    notoriety_bar_sprite: SpriteId,
+    default_notoriety: number,
+    unk1: number
+}
+
 export interface All {
     palettes: Palette[],
     fonts: Font[],
@@ -151,5 +159,6 @@ export interface All {
     clips: Clip[],
     sounds: Sound[],
     items: Item[],
-    quests: Quest[]
+    quests: Quest[],
+    gangs: Gang[]
 }
