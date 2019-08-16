@@ -106,7 +106,14 @@ export interface Sprite {
     commands: DrawCommand[]
 }
 
-export type Clip = number[][];
+export type Clip = SpriteId[][];
+
+export interface Sound {
+    path: string,
+    mime: string,
+    priority: number,
+    deferred_load: boolean
+}
 
 export interface All {
     palettes: Palette[],
@@ -114,5 +121,6 @@ export interface All {
     languages: Language[],
     images: string[],
     sprites: Sprite[],
-    clips: Clip[]
+    clips: Clip[],
+    sounds: Sound[]
 }

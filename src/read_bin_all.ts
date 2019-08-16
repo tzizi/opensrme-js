@@ -268,6 +268,44 @@ function read_clips(buffer: Buffer, offset: number): [bin_types.Clip[], number] 
 }
 
 
+function read_sound(buffer: Buffer, offset: number): [bin_types.Sound, number] {
+    let path: string;
+    [path, offset] = datastream.read_utf8(buffer, offset)
+
+    let mime: string;
+    [mime, offset] = datastream.read_utf8(buffer, offset);
+
+    let priority = buffer.readInt32BE(offset);
+    offset += 4;
+
+    let deferred_load = buffer.readInt8(offset) === 1;
+    offset += 1;
+
+    return [{
+        path,
+        mime,
+        priority,
+        deferred_load
+    }, offset];
+}
+
+function read_sounds(buffer: Buffer, offset: number): [bin_types.Sound[], number] {
+    let sounds = [];
+
+    const sounds_amt = buffer.readInt16BE(offset);
+    offset += 2;
+
+    for (let sound_i = 0; sound_i < sounds_amt; sound_i++) {
+        let sound: bin_types.Sound;
+        [sound, offset] = read_sound(buffer, offset);
+
+        sounds.push(sound);
+    }
+
+    return [sounds, offset];
+}
+
+
 export function read_bin_all(buffer: Buffer): bin_types.All {
     let offset = 0;
 
@@ -277,7 +315,8 @@ export function read_bin_all(buffer: Buffer): bin_types.All {
         languages: [],
         images: [],
         sprites: [],
-        clips: []
+        clips: [],
+        sounds: []
     };
 
     [all.palettes, offset]  = read_palettes(buffer, offset);
@@ -286,6 +325,7 @@ export function read_bin_all(buffer: Buffer): bin_types.All {
     [all.sprites,
         all.images, offset] = read_sprites(buffer, offset);
     [all.clips, offset]     = read_clips(buffer, offset);
+    [all.sounds, offset]    = read_sounds(buffer, offset);
 
     return all;
 }
