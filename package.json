@@ -1,0 +1,13 @@
+{
+    "name": "opensrme",
+    "version": "0.0.1",
+    "devDependencies": {
+        "@types/node": "^12.7.1",
+        "gulp": "^4.0.2",
+        "gulp-typescript": "^5.0.1",
+        "ts-loader": "^6.0.4",
+        "typescript": "^3.5.3",
+        "webpack": "^4.39.2",
+        "webpack-cli": "^3.3.6"
+    }
+}
