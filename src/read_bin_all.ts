@@ -299,6 +299,44 @@ function read_sounds(buffer: Buffer, offset: number): [bin_types.Sound[], number
 }
 
 
+function read_item(buffer: Buffer, offset: number): [bin_types.Item, number] {
+    const type: bin_types.ItemType = buffer.readInt32BE(offset);
+    offset += 4;
+
+    const price = buffer.readInt32BE(offset);
+    offset += 4;
+
+    const increment = buffer.readInt32BE(offset);
+    offset += 4;
+
+    const maximum = buffer.readInt32BE(offset);
+    offset += 4;
+
+    const name = buffer.readInt32BE(offset);
+    offset += 4;
+
+    const description = buffer.readInt32BE(offset);
+    offset += 4;
+
+    const sprite: bin_types.SpriteId = buffer.readInt16BE(offset);
+    offset += 2;
+
+    return [{
+        type,
+        price,
+        increment,
+        maximum,
+        name,
+        description,
+        sprite
+    }, offset];
+}
+
+function read_items(buffer: Buffer, offset: number): [bin_types.Item[], number] {
+    return read_array<bin_types.Item>(read_item, buffer, offset);
+}
+
+
 export function read_bin_all(buffer: Buffer): bin_types.All {
     let offset = 0;
 
@@ -309,7 +347,8 @@ export function read_bin_all(buffer: Buffer): bin_types.All {
         images: [],
         sprites: [],
         clips: [],
-        sounds: []
+        sounds: [],
+        items: []
     };
 
     [all.palettes, offset]  = read_palettes(buffer, offset);
@@ -319,6 +358,7 @@ export function read_bin_all(buffer: Buffer): bin_types.All {
         all.images, offset] = read_sprites(buffer, offset);
     [all.clips, offset]     = read_clips(buffer, offset);
     [all.sounds, offset]    = read_sounds(buffer, offset);
+    [all.items, offset]     = read_items(buffer, offset);
 
     return all;
 }

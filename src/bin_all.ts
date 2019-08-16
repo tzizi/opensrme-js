@@ -3,6 +3,7 @@ export type SpriteId = Id;
 export type PaletteId = Id;
 export type FontId = Id;
 export type LanguageId = Id;
+export type StringId = Id;
 export type ImageId = Id;
 
 export interface Color {
@@ -115,6 +116,22 @@ export interface Sound {
     deferred_load: boolean
 }
 
+export enum ItemType {
+    Weapon = 0,
+    Food = 1,
+    Addon = 2
+}
+
+export interface Item {
+    type: ItemType,
+    price: number,
+    increment: number,
+    maximum: number,
+    name: StringId,
+    description: StringId,
+    sprite: SpriteId
+}
+
 export interface All {
     palettes: Palette[],
     fonts: Font[],
@@ -122,5 +139,6 @@ export interface All {
     images: string[],
     sprites: Sprite[],
     clips: Clip[],
-    sounds: Sound[]
+    sounds: Sound[],
+    items: Item[]
 }
