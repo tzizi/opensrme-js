@@ -3,6 +3,23 @@ import * as datastream from "./datastream";
 import * as sprite from "./sprite";
 
 
+function read_array<T>(read_func: Function, buffer: Buffer, offset: number): [T[], number] {
+    let result: T[] = [];
+
+    const count = buffer.readInt16BE(offset);
+    offset += 2;
+
+    for (let i = 0; i < count; i++) {
+        let current: T;
+        [current, offset] = read_func(buffer, offset);
+
+        result.push(current);
+    }
+
+    return [result, offset];
+}
+
+
 function read_palette(buffer: Buffer, offset: number): [bin_types.Palette, number] {
     let size = buffer.readInt32BE(offset);
     offset += 4;
@@ -252,19 +269,7 @@ function read_clip(buffer: Buffer, offset: number): [bin_types.Clip, number] {
 }
 
 function read_clips(buffer: Buffer, offset: number): [bin_types.Clip[], number] {
-    let clips = [];
-
-    const clips_amt = buffer.readInt16BE(offset);
-    offset += 2;
-
-    for (let clip_i = 0; clip_i < clips_amt; clip_i++) {
-        let clip: bin_types.Clip;
-        [clip, offset] = read_clip(buffer, offset);
-
-        clips.push(clip);
-    }
-
-    return [clips, offset];
+    return read_array<bin_types.Clip>(read_clip, buffer, offset);
 }
 
 
@@ -290,19 +295,7 @@ function read_sound(buffer: Buffer, offset: number): [bin_types.Sound, number] {
 }
 
 function read_sounds(buffer: Buffer, offset: number): [bin_types.Sound[], number] {
-    let sounds = [];
-
-    const sounds_amt = buffer.readInt16BE(offset);
-    offset += 2;
-
-    for (let sound_i = 0; sound_i < sounds_amt; sound_i++) {
-        let sound: bin_types.Sound;
-        [sound, offset] = read_sound(buffer, offset);
-
-        sounds.push(sound);
-    }
-
-    return [sounds, offset];
+    return read_array<bin_types.Sound>(read_sound, buffer, offset);
 }
 
 
